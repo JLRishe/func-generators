@@ -1,0 +1,28 @@
+{
+  "name": "func-generators",
+  "version": "0.0.1",
+  "description": "Functional transformations for JavaScript generators",
+  "main": "source/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JLRishe/func-generators.git"
+  },
+  "keywords": [
+    "fp",
+    "functional-programming",
+    "generators",
+    "javascript"
+  ],
+  "author": "James Rishe",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JLRishe/func-generators/issues"
+  },
+  "homepage": "https://github.com/JLRishe/func-generators#readme",
+  "dependencies": {
+    "ramda": "^0.25.0"
+  }
+}
