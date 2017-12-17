@@ -55,11 +55,17 @@ const genTransform = (update, ...embedStart) => function* (start) {
     }
 };
 
-// Generator -> (*, ...) -> *
-const genHead = gen => (...args) => gen(...args).next().value;
+// (Generator a, *...) -> a
+const genHead = (gen, ...args) => gen(...args).next().value;
 
-// Generator -> *
-const genHeadNow = (gen, ...args) => gen(...args).next().value;
+// (Generator a, *...) -> a
+const genLast = (gen, ...args) => {
+    let val;
+    
+    for (val of gen(...args)) { }
+    
+    return val;
+};
 
 // Generator -> *
 const genLength = gen => {
@@ -84,6 +90,20 @@ const genTake = curry((count, gen) => function* (...args) {
     }
 });
 
+// Number -> Generator -> Generator
+const genDrop = curry((count, gen) => function* (...args) {
+    if (count <= 0) { return; }
+    let curCount = 0;
+    const it = gen(...args);
+    
+    for (let val of it) {
+        if (curCount >= count) {
+            yield val;
+        }
+        curCount += 1;
+    }
+});
+
 module.exports = {
     genZip
     , genFilter
@@ -92,7 +112,8 @@ module.exports = {
     , genInfinite
     , genTransform
     , genHead
-    , genHeadNow
+    , genLast
     , genLength
     , genTake
+    , genDrop
 };

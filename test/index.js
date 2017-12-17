@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { genMap, genFilter, genZip, genTimes, genTake } = require('..');
+const { genMap, genFilter, genZip, genTimes, genTake, genDrop, genHead, genLast } = require('..');
 
 
 describe('func-generators', () => {
@@ -40,5 +40,24 @@ describe('func-generators', () => {
         const values = Array.from(zeroToThree());
         
         assert.deepEqual(values, [0, 1, 2, 3]);
+    });
+    
+    it('should get the first element', () => {
+        const gt5 = genFilter(n => n > 5, zeroToNine);
+        
+        assert.equal(genHead(gt5), 6);
+    });
+    
+    it('should get the last element', () => {
+        const lt5 = genFilter(n => n < 5, zeroToNine);
+        
+        assert.equal(genLast(lt5), 4);
+    });
+    
+    it('should drop', () => {
+        const fourToNine = genDrop(4, zeroToNine);
+        const values = Array.from(fourToNine());
+        
+        assert.deepEqual(values, [4, 5, 6, 7, 8, 9]);
     });
 });
