@@ -1,6 +1,4 @@
-
 const { __, compose, curry } = require('ramda');
-const { probe } = require('.');
 
 // Generator -> Generator -> Generator
 const genZip = curry((gf1, gf2) => function* () {
@@ -47,13 +45,13 @@ function* genInfinite() {
 }
 
 // (a -> a) -> a -> Generator
-const genTransform = (update, ...embedStart) => function* (start) {
-    let val = embedStart.length > 0 ? embedStart[0] : start;
+const genTransform = curry((update, start) => function* () {
+    let val = start;
     while (true) {
         yield val;
         val = update(val);
     }
-};
+});
 
 // (Generator a, *...) -> a
 const genHead = (gen, ...args) => gen(...args).next().value;
