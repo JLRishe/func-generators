@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { genMap, genFilter, genZip, genTimes, genTake, genDrop, genHead, genLast } = require('..');
+const { genMap, genFilter, genZip, genTimes, genTake, genDrop, genHead, genLast, genTransform, genStop } = require('..');
 
 
 describe('func-generators', () => {
@@ -59,5 +59,45 @@ describe('func-generators', () => {
         const values = Array.from(fourToNine());
         
         assert.deepEqual(values, [4, 5, 6, 7, 8, 9]);
+    });
+    
+    it('should transform', () => {
+        const tf = genTransform(
+            ({ a, b }) => ({ a: b + 1, b: a + 2 }),
+            { a: 0, b: 0 }
+        );
+        const firstFive = genTake(5, tf);
+        
+        const values = Array.from(firstFive());
+        
+        assert.deepEqual(
+            values,
+            [
+                { a: 0, b: 0 },
+                { a: 1, b: 2 },
+                { a: 3, b: 3 },
+                { a: 4, b: 5 },
+                { a: 6, b: 6 },
+            ]
+        );        
+    });
+    
+    it('should stop transforming', () => {
+        const tf = genTransform(
+            ({ a, b }) => a > 3 ? genStop : ({ a: b + 1, b: a + 2 }),
+            { a: 0, b: 0 }
+        );
+        
+        const values = Array.from(tf());
+        
+        assert.deepEqual(
+            values,
+            [
+                { a: 0, b: 0 },
+                { a: 1, b: 2 },
+                { a: 3, b: 3 },
+                { a: 4, b: 5 },
+            ]
+        );        
     });
 });

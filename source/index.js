@@ -47,7 +47,7 @@ function* genInfinite() {
 // (a -> a) -> a -> Generator
 const genTransform = curry((update, start) => function* () {
     let val = start;
-    while (true) {
+    while (val !== genStop) {
         yield val;
         val = update(val);
     }
@@ -102,6 +102,8 @@ const genDrop = curry((count, gen) => function* (...args) {
     }
 });
 
+const genStop = Symbol('@@func-generators/stop');
+
 module.exports = {
     genZip
     , genFilter
@@ -114,4 +116,5 @@ module.exports = {
     , genLength
     , genTake
     , genDrop
+    , genStop
 };
