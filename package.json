@@ -22,7 +22,5 @@
     "url": "https://github.com/JLRishe/func-generators/issues"
   },
   "homepage": "https://github.com/JLRishe/func-generators#readme",
-  "dependencies": {
-    "ramda": "^0.25.0"
-  }
+  "dependencies": {}
 }

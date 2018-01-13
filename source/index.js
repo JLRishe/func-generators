@@ -1,18 +1,4 @@
-const { __, compose, curry } = require('ramda');
-
-// Generator -> Generator -> Generator
-const genZip = curry((gf1, gf2) => function* () {
-    const it1 = gf1();
-    const it2 = gf2();
-    let n1 = it1.next();
-    let n2 = it2.next();
-    
-    while (!(n1.done || n2.done)) {
-        yield [n1.value, n2.value];
-        n1 = it1.next();
-        n2 = it2.next();
-    }
-});
+const { curry } = require('./helpers');
 
 // (* -> *) -> Generator -> Generator
 const genMap = curry((f, genf) => function* (...args) {
@@ -30,6 +16,46 @@ const genFilter = curry((f, genf) => function* (...args) {
     }
 });
 
+// Generator -> Generator -> Generator
+const genZip = curry((gf1, gf2) => function* () {
+    const it1 = gf1();
+    const it2 = gf2();
+    let n1 = it1.next();
+    let n2 = it2.next();
+    
+    while (!(n1.done || n2.done)) {
+        yield [n1.value, n2.value];
+        n1 = it1.next();
+        n2 = it2.next();
+    }
+});
+
+// Number -> Generator -> Generator
+const genTake = curry((count, gen) => function* (...args) {
+    if (count <= 0) { return; }
+    let curCount = 0;
+    
+    for (let val of gen(...args)) {
+        yield val;
+        curCount += 1;
+        if (curCount >= count) { return; }
+    }
+});
+
+// Number -> Generator -> Generator
+const genDrop = curry((count, gen) => function* (...args) {
+    if (count <= 0) { return; }
+    let curCount = 0;
+    const it = gen(...args);
+    
+    for (let val of it) {
+        if (curCount >= count) {
+            yield val;
+        }
+        curCount += 1;
+    }
+});
+
 // Number -> Generator
 const genTimes = (times) => function* () {
     for (let i = 0; i < times; i += 1) {
@@ -38,11 +64,11 @@ const genTimes = (times) => function* () {
 };
 
 // () -> Generator
-function* genInfinite() {
-    for (let i = 0; ; i += 1) {
+const genInfinite = (startValue = 0, increment = 1) => function* () {
+    for (let i = startValue; ; i += increment) {
         yield i;
     }
-}
+};
 
 // (a -> a) -> a -> Generator
 const genTransform = curry((update, start) => function* () {
@@ -75,32 +101,6 @@ const genLength = gen => {
     
     return count;
 };
-
-// Number -> Generator -> Generator
-const genTake = curry((count, gen) => function* (...args) {
-    if (count <= 0) { return; }
-    let curCount = 0;
-    
-    for (let val of gen(...args)) {
-        yield val;
-        curCount += 1;
-        if (curCount >= count) { return; }
-    }
-});
-
-// Number -> Generator -> Generator
-const genDrop = curry((count, gen) => function* (...args) {
-    if (count <= 0) { return; }
-    let curCount = 0;
-    const it = gen(...args);
-    
-    for (let val of it) {
-        if (curCount >= count) {
-            yield val;
-        }
-        curCount += 1;
-    }
-});
 
 const genStop = Symbol('@@func-generators/stop');
 

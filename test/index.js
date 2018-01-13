@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { genMap, genFilter, genZip, genTimes, genTake, genDrop, genHead, genLast, genTransform, genStop } = require('..');
+const { genMap, genFilter, genZip, genTimes, genTake, genDrop, genHead, genLast, genInfinite, genLength, genTransform, genStop } = require('..');
 
 
 describe('func-generators', () => {
@@ -42,6 +42,13 @@ describe('func-generators', () => {
         assert.deepEqual(values, [0, 1, 2, 3]);
     });
     
+    it('should drop', () => {
+        const fourToNine = genDrop(4, zeroToNine);
+        const values = Array.from(fourToNine());
+        
+        assert.deepEqual(values, [4, 5, 6, 7, 8, 9]);
+    });
+    
     it('should get the first element', () => {
         const gt5 = genFilter(n => n > 5, zeroToNine);
         
@@ -53,12 +60,21 @@ describe('func-generators', () => {
         
         assert.equal(genLast(lt5), 4);
     });
-    
-    it('should drop', () => {
-        const fourToNine = genDrop(4, zeroToNine);
-        const values = Array.from(fourToNine());
+
+    it('should generate as many values as needed', () => {
+        const firstSeven = Array.from(genTake(7, genInfinite())());
         
-        assert.deepEqual(values, [4, 5, 6, 7, 8, 9]);
+        assert.deepEqual(firstSeven, [0, 1, 2, 3, 4, 5, 6]);
+        
+        const oddsFrom7 = Array.from(genTake(4, genInfinite(7, 2))());
+        
+        assert.deepEqual(oddsFrom7, [7, 9, 11, 13]);
+    });
+    
+    it('should determine length', () => {
+        const values = genTake(28, genInfinite(9, 13));
+        
+        assert.equal(genLength(values), 28);
     });
     
     it('should transform', () => {
