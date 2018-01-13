@@ -1,5 +1,8 @@
 const { curry } = require('./helpers');
 
+const DEFAULT_START = 0;
+const DEFAULT_STEP = 1;
+
 // (* -> *) -> Generator -> Generator
 const genMap = curry((f, genf) => function* (...args) {
     for (let val of genf(...args)) {
@@ -56,19 +59,16 @@ const genDrop = curry((count, gen) => function* (...args) {
     }
 });
 
-// Number -> Generator
-const genTimes = (times) => function* () {
-    for (let i = 0; i < times; i += 1) {
+// (Number?, Number?) -> Generator
+const genInfinite = (start = DEFAULT_START, step = DEFAULT_STEP) => function* () {
+    for (let i = start; ; i += step) {
         yield i;
     }
 };
 
-// () -> Generator
-const genInfinite = (startValue = 0, increment = 1) => function* () {
-    for (let i = startValue; ; i += increment) {
-        yield i;
-    }
-};
+// (Number, Number?, Number?) -> Generator
+const genTimes = (times, start = DEFAULT_START, step = DEFAULT_STEP) => 
+    genTake(times, genInfinite(start, step));
 
 // (a -> a) -> a -> Generator
 const genTransform = curry((update, start) => function* () {
