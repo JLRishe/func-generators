@@ -1,5 +1,36 @@
 # func-generators
-Functional transformations for JavaScript generator functions
+Functional transformations and helpers for JavaScript generator functions
+
+This library provides a handful of functions for creating and transforming generator functions.
+
+The subtle difference between operating on generator _functions_ as opposed to operating on iterable objects is that operating on an iterable object is not a pure operation ― certain iterable values can only be iterated once. By contrast, transforming generator functions can be a pure operation with no side effects.
+
+For example:
+
+```js
+var gen = genTimes(10);           // create a generator that prduces the numbers 0 - 9
+
+var gOdds = genFilter(x => x % 2 === 1, gen);  // create a generator that produces odds from 1 - 9
+var gEvens = genFilter(x => x % 2 === 0, gen); // create a generator that produces evens from 0 - 8
+
+var odds = Array.from(gOdds());   // [1, 3, 5, 7, 9];
+var evens = Array.from(gEvens()); // [0, 2, 4, 6, 8];
+```
+
+As we can see here, we are able to apply multiple transformations to the same generator function without affecting any of the others.
+
+Several of the functions in this library are curried and are indicated as ___Curried___ when this is the case.
+
+As such, they should work nicely with Ramda's `compose()` or any similar `compose()` operation:
+
+```js
+const firstMultipleOfTen = compose(
+    genHead,
+    genFilter(x => x % 10 === 0)
+);
+
+firstMultipleOfTen(genInfinite(35));    // 40
+```
 
 ## API Reference
 
