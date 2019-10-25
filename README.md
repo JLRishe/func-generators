@@ -151,7 +151,21 @@ Executes `gen` and returns the total number of values that it produces.
 _Example:_
 
 ```js
-genLength(genTake(6));    // 6
+genLength(genTimes(6));    // 6
+```
+
+#### <a name='genToArray'></a>`genToArray(gen)`
+
+_Generator a -> [a]_
+
+Executes `gen` and returns an array of all values that it generates.
+
+**Caution:** Will block until `gen` finishes producing values and will block indefinitely if `gen` does not terminate.
+
+_Example:_
+
+```js
+genToArray(genTimes(6));    // [0, 1, 2, 3, 4, 5]
 ```
 
 ### Generator creation
@@ -169,7 +183,7 @@ genInfinite(5, 2);    // generator for 5, 7, 9, 11, 13, ...
 ```
 
 
-#### <a href='genTimes'></a>`genTimes(count, start = 0, step = 1)`
+#### <a name='genTimes'></a>`genTimes(count, start = 0, step = 1)`
 
 _(Number, Number?, Number?) -> Generator Number_
 
@@ -179,6 +193,20 @@ _Example:_
 
 ```js
 genTimes(6, 10, 5);   // generator for 10, 15, 20, 25, 30, 35
+```
+
+#### <a name='genFrom'></a>`genFrom(iterable)`
+
+_Iter a -> Generator a_
+
+Creates a generator which produces the values produced by `iterable`.
+
+**Note:** If `iterator` has side-effects or is impure (e.g. it can only be iterated once, etc.), then any generator returned from this function will ultimately have similar side-effects.
+
+_Example:_
+
+```js
+genFrom([1, 3, 4, 6]);   // generator for 1, 3, 4, 6
 ```
 
 

@@ -102,19 +102,27 @@ const genLength = gen => {
     return count;
 };
 
+// Iterable -> Generator
+const genFrom = iterable => function* () { for (const x of iterable) { yield x; } };
+
+// Generator -> Array
+const genToArray = gen => Array.from(gen());
+
 const genStop = Symbol('@@func-generators/stop');
 
 module.exports = {
-    genZip
-    , genFilter
-    , genMap
-    , genTimes
-    , genInfinite
-    , genTransform
-    , genHead
-    , genLast
-    , genLength
-    , genTake
-    , genDrop
-    , genStop
+    genZip,
+    genFilter,
+    genMap,
+    genTimes,
+    genInfinite,
+    genTransform,
+    genHead,
+    genLast,
+    genLength,
+    genTake,
+    genDrop,
+    genFrom,
+    genToArray,
+    genStop,
 };

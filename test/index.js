@@ -1,6 +1,7 @@
 const assert = require('assert');
-const { genMap, genFilter, genZip, genTimes, genTake, genDrop, genHead, genLast, genInfinite, genLength, genTransform, genStop } = require('..');
+const { genMap, genFilter, genZip, genTimes, genTake, genDrop, genHead, genLast, genInfinite, genLength, genTransform, genStop, genFrom, genToArray } = require('..');
 
+const testArr = [1, 3, 6,'hello', { a: 1, b: 2 }];
 
 describe('func-generators', () => {
     const zeroToNine = genTimes(10);
@@ -115,5 +116,27 @@ describe('func-generators', () => {
                 { a: 4, b: 5 },
             ]
         );        
+    });
+
+    it('should make generator functions', () => {
+        assert.deepEqual(genToArray(genFrom(testArr)), testArr);
+
+        const mapValues = [[1, 2], [4, 5]];
+
+        assert.deepEqual(
+            genToArray(genFrom(new Map(mapValues))),
+            mapValues,
+        );
+
+        assert.deepEqual(
+            genToArray(genFrom(new Set(testArr))),
+            testArr,
+        );
+    });
+
+    it('should convert generators to arrays', () => {
+        assert.deepEqual(genToArray(genFrom(testArr)), testArr);
+
+        assert.deepEqual(genToArray(genTimes(5)), [0, 1, 2, 3, 4]);
     });
 });
